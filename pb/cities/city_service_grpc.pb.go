@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CitiesServiceClient interface {
-	GetCity(ctx context.Context, in *Id, opts ...grpc.CallOption) (*City, error)
+	GetCity(ctx context.Context, in *City, opts ...grpc.CallOption) (*City, error)
 }
 
 type citiesServiceClient struct {
@@ -37,7 +37,7 @@ func NewCitiesServiceClient(cc grpc.ClientConnInterface) CitiesServiceClient {
 	return &citiesServiceClient{cc}
 }
 
-func (c *citiesServiceClient) GetCity(ctx context.Context, in *Id, opts ...grpc.CallOption) (*City, error) {
+func (c *citiesServiceClient) GetCity(ctx context.Context, in *City, opts ...grpc.CallOption) (*City, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(City)
 	err := c.cc.Invoke(ctx, CitiesService_GetCity_FullMethodName, in, out, cOpts...)
@@ -51,14 +51,14 @@ func (c *citiesServiceClient) GetCity(ctx context.Context, in *Id, opts ...grpc.
 // All implementations should embed UnimplementedCitiesServiceServer
 // for forward compatibility
 type CitiesServiceServer interface {
-	GetCity(context.Context, *Id) (*City, error)
+	GetCity(context.Context, *City) (*City, error)
 }
 
 // UnimplementedCitiesServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedCitiesServiceServer struct {
 }
 
-func (UnimplementedCitiesServiceServer) GetCity(context.Context, *Id) (*City, error) {
+func (UnimplementedCitiesServiceServer) GetCity(context.Context, *City) (*City, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCity not implemented")
 }
 
@@ -74,7 +74,7 @@ func RegisterCitiesServiceServer(s grpc.ServiceRegistrar, srv CitiesServiceServe
 }
 
 func _CitiesService_GetCity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
+	in := new(City)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func _CitiesService_GetCity_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: CitiesService_GetCity_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CitiesServiceServer).GetCity(ctx, req.(*Id))
+		return srv.(CitiesServiceServer).GetCity(ctx, req.(*City))
 	}
 	return interceptor(ctx, in, info, handler)
 }

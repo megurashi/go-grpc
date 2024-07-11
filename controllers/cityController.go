@@ -1,24 +1,25 @@
 package controllers
 
 import (
-	"app/models"
 	"app/pb/cities"
 	"context"
 	"database/sql"
-	"log"
 )
 
 // City struct
 type City struct {
-	DB  *sql.DB
-	Log *log.Logger
+	DB *sql.DB
 	cities.UnimplementedCitiesServiceServer
 }
 
 // GetCity function
-func (s *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error) {
+func (s *City) GetCity(ctx context.Context, in *cities.City) (*cities.City, error) {
+	return &cities.City{Id: 1, Name: "Jakarta"}, nil
+}
+
+// GetCity function
+/*func (s *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error) {
 	var cityModel models.City
-	cityModel.Log = s.Log
 	err := cityModel.Get(ctx, s.DB, in)
 	return &cityModel.Pb, err
-}
+}*/
