@@ -12,12 +12,15 @@ type City struct {
 	Log *log.Logger
 }
 
-func (u *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
+// getCity
+func (i *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 	query := `SELECT id, name FROM cities WHERE id = $1`
-	err := db.QueryRowContext(ctx, query, in.Id).Scan(&u.Pb.Id, &u.Pb.Name)
+	err := db.QueryRowContext(ctx, query, in.Id).Scan(&i.Pb.Id, &i.Pb.Name)
+
 	if err != nil {
-		u.Log.Println("Error on query", err)
+		i.Log.Println("Error on query", err)
 		return err
 	}
+
 	return nil
 }
