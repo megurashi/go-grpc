@@ -4,6 +4,7 @@ import (
 	"app/pb/cities"
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -42,4 +43,30 @@ func (i *City) Create(ctx context.Context, db *sql.DB, in *cities.CityInput) err
 
 	return nil
 
+}
+
+// updateCity
+func (i *City) Update(ctx context.Context, db *sql.DB, in *cities.City) error {
+	query := `UPDATE cities SET name = $1 WHERE id = $2`
+	stmt, err := db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	res, err := stmt.ExecContext(ctx, in.Name, in.Id)
+	if err != nil {
+		return err
+	}
+
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		return fmt.Errorf("data not found!")
+	}
+
+	i.Pb.Id = in.Id
+	i.Pb.Name = in.Name
+
+	return nil
 }

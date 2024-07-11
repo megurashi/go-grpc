@@ -34,3 +34,11 @@ func (i *City) Create(ctx context.Context, in *cities.CityInput) (*cities.City, 
 	err := cityModel.Create(ctx, i.DB, in)
 	return &cityModel.Pb, err
 }
+
+// UpdateCity to database
+func (i *City) Update(ctx context.Context, in *cities.City) (*cities.City, error) {
+	var cityModel models.City
+	cityModel.Log = i.Log
+	err := cityModel.Update(ctx, i.DB, in)
+	return &cityModel.Pb, err
+}

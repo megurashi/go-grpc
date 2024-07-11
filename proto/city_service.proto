@@ -9,5 +9,6 @@ service CitiesService {
     rpc GetCitylocal(City) returns (City) {}
     rpc GetCity(Id) returns (City) {}
     rpc Create(CityInput) returns (City) {}
+    rpc Update(City) returns (City) {}
 }
 
