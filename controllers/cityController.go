@@ -16,14 +16,21 @@ type City struct {
 }
 
 // GetCity hardcode
-func (s *City) GetCitylocal(ctx context.Context, in *cities.City) (*cities.City, error) {
+func (i *City) GetCitylocal(ctx context.Context, in *cities.City) (*cities.City, error) {
 	return &cities.City{Id: 1, Name: "Jakarta"}, nil
 }
 
 // GetCity from database
-func (s *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error) {
+func (i *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error) {
 	var cityModel models.City
-	cityModel.Log = s.Log
-	err := cityModel.Get(ctx, s.DB, in)
+	cityModel.Log = i.Log
+	err := cityModel.Get(ctx, i.DB, in)
+	return &cityModel.Pb, err
+}
+
+// CreateCity to database
+func (i *City) Create(ctx context.Context, in *cities.CityInput) (*cities.City, error) {
+	var cityModel models.City
+	err := cityModel.Create(ctx, i.DB, in)
 	return &cityModel.Pb, err
 }
