@@ -3,11 +3,7 @@ package main
 import (
 	"app/controllers"
 	"app/pb/cities"
-<<<<<<< HEAD
 	"app/pkg/database"
-=======
-	database "app/pkg/db"
->>>>>>> 099be60759990b60004f0fdf1e2c579740433b14
 	"fmt"
 	"log"
 	"net"

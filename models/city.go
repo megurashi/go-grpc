@@ -1,6 +1,4 @@
 package models
-<<<<<<< HEAD
-=======
 
 import (
 	"app/pb/cities"
@@ -23,4 +21,3 @@ func (u *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 	}
 	return nil
 }
->>>>>>> 099be60759990b60004f0fdf1e2c579740433b14
