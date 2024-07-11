@@ -14,12 +14,12 @@ type City struct {
 }
 
 // getCity
-func (i *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
+func (m *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 	query := `SELECT id, name FROM cities WHERE id = $1`
-	err := db.QueryRowContext(ctx, query, in.Id).Scan(&i.Pb.Id, &i.Pb.Name)
+	err := db.QueryRowContext(ctx, query, in.Id).Scan(&m.Pb.Id, &m.Pb.Name)
 
 	if err != nil {
-		i.Log.Println("Error on query", err)
+		m.Log.Println("Error on query", err)
 		return err
 	}
 
@@ -27,26 +27,26 @@ func (i *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 }
 
 // CreateCity
-func (i *City) Create(ctx context.Context, db *sql.DB, in *cities.CityInput) error {
+func (m *City) Create(ctx context.Context, db *sql.DB, in *cities.CityInput) error {
 	query := `INSERT INTO cities (name) VALUES ($1) RETURNING id;`
 	stmt, err := db.PrepareContext(ctx, query)
 	if err != nil {
 		return err
 	}
 
-	err = stmt.QueryRowContext(ctx, in.Name).Scan(&i.Pb.Id)
+	err = stmt.QueryRowContext(ctx, in.Name).Scan(&m.Pb.Id)
 	if err != nil {
 		return err
 	}
 
-	i.Pb.Name = in.Name
+	m.Pb.Name = in.Name
 
 	return nil
 
 }
 
 // updateCity
-func (i *City) Update(ctx context.Context, db *sql.DB, in *cities.City) error {
+func (m *City) Update(ctx context.Context, db *sql.DB, in *cities.City) error {
 	query := `UPDATE cities SET name = $1 WHERE id = $2`
 	stmt, err := db.PrepareContext(ctx, query)
 	if err != nil {
@@ -65,8 +65,34 @@ func (i *City) Update(ctx context.Context, db *sql.DB, in *cities.City) error {
 		return fmt.Errorf("data not found!")
 	}
 
-	i.Pb.Id = in.Id
-	i.Pb.Name = in.Name
+	m.Pb.Id = in.Id
+	m.Pb.Name = in.Name
 
 	return nil
+}
+
+// deleteCity
+func (m *City) Delete(ctx context.Context, db *sql.DB, in *cities.Id) error {
+	query := `DELETE FROM cities WHERE id = $1`
+	stmt, err := db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	rs, err := stmt.ExecContext(ctx, in.Id)
+	if err != nil {
+		return err
+	}
+
+	affected, err := rs.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return fmt.Errorf("DATA NOT FOUND")
+	}
+
+	return nil
+
 }

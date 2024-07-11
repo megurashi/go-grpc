@@ -16,29 +16,39 @@ type City struct {
 }
 
 // GetCity hardcode
-func (i *City) GetCitylocal(ctx context.Context, in *cities.City) (*cities.City, error) {
+func (c *City) GetCitylocal(ctx context.Context, in *cities.City) (*cities.City, error) {
 	return &cities.City{Id: 1, Name: "Jakarta"}, nil
 }
 
 // GetCity from database
-func (i *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error) {
+func (c *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error) {
 	var cityModel models.City
-	cityModel.Log = i.Log
-	err := cityModel.Get(ctx, i.DB, in)
+	cityModel.Log = c.Log
+	err := cityModel.Get(ctx, c.DB, in)
 	return &cityModel.Pb, err
 }
 
 // CreateCity to database
-func (i *City) Create(ctx context.Context, in *cities.CityInput) (*cities.City, error) {
+func (c *City) Create(ctx context.Context, in *cities.CityInput) (*cities.City, error) {
 	var cityModel models.City
-	err := cityModel.Create(ctx, i.DB, in)
+	err := cityModel.Create(ctx, c.DB, in)
 	return &cityModel.Pb, err
 }
 
 // UpdateCity to database
-func (i *City) Update(ctx context.Context, in *cities.City) (*cities.City, error) {
+func (c *City) Update(ctx context.Context, in *cities.City) (*cities.City, error) {
 	var cityModel models.City
-	cityModel.Log = i.Log
-	err := cityModel.Update(ctx, i.DB, in)
+	cityModel.Log = c.Log
+	err := cityModel.Update(ctx, c.DB, in)
 	return &cityModel.Pb, err
+}
+
+// DeleteCity from database
+func (c *City) Delete(ctx context.Context, in *cities.Id) (*cities.MyBoolean, error) {
+	var cityModel models.City
+	err := cityModel.Delete(ctx, c.DB, in)
+	if err != nil {
+		return &cities.MyBoolean{Boolean: false}, err
+	}
+	return &cities.MyBoolean{Boolean: true}, nil
 }
