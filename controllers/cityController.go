@@ -6,6 +6,9 @@ import (
 	"context"
 	"database/sql"
 	"log"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // City struct
@@ -26,6 +29,35 @@ func (c *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error)
 	cityModel.Log = c.Log
 	err := cityModel.Get(ctx, c.DB, in)
 	return &cityModel.Pb, err
+}
+
+// GetCities stream from database
+func (c *City) GetCities(in *cities.EmptyMessage, stream cities.CitiesService_GetCitiesServer) error {
+	query := `SELECT id, name FROM cities`
+	row, err := c.DB.Query(query)
+	if err != nil {
+		return err
+	}
+	defer row.Close()
+
+	for row.Next() {
+		var city cities.City
+		err = row.Scan(&city.Id, &city.Name)
+		if err != nil {
+			return err
+		}
+
+		res := &cities.CitiesStream{
+			City: &city,
+		}
+
+		err := stream.Send(res)
+		if err != nil {
+			return status.Errorf(codes.Unknown, "cannot send stream response: %v", err)
+		}
+	}
+
+	return nil
 }
 
 // CreateCity to database
